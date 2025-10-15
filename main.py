@@ -1,16 +1,39 @@
-# 这是一个示例 Python 脚本。
+'''
+#视频抽帧
+import cv2
+cap = cv2.VideoCapture('video.mp4')
+num = 1
+while cap.isOpened():
+    ret,frame=cap.read()
+    if ret:
+        cv2.imwrite(f'data_{num}.jpg',frame)
+        num += 1
+    else:
+        cap.release()
+        break
+'''
 
-# 按 Shift+F10 执行或将其替换为您的代码。
-# 按 双击 Shift 在所有地方搜索类、文件、工具窗口、操作和设置。
+import cv2
+import os
 
+# 创建保存目录
+save_dir = 'dataset_cs1.6'
+os.makedirs(save_dir, exist_ok=True)  # 自动创建文件夹，若已存在则忽略
 
-def print_hi(name):
-    # 在下面的代码行中使用断点来调试脚本。
-    print(f'Hi, {name}')  # 按 Ctrl+F8 切换断点。
+cap = cv2.VideoCapture('video_cs1.6.mp4')
+fps = cap.get(cv2.CAP_PROP_FPS)
+frame_interval = int(fps/2)         #每秒截取的照片数量
+frame_count = 0
+num = 1
+while cap.isOpened():
+    ret, frame = cap.read()
+    if not ret:
+        break
 
-
-# 按装订区域中的绿色按钮以运行脚本。
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# 访问 https://www.jetbrains.com/help/pycharm/ 获取 PyCharm 帮助
+    frame_count += 1
+    if frame_count % frame_interval == 0:
+        # 指定保存路径为dataset文件夹
+        save_path = os.path.join(save_dir, f'data_{num}.jpg')
+        cv2.imwrite(save_path, frame)
+        num += 1
+cap.release()
